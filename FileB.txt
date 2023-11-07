@@ -1,3 +1,7 @@
 File B
+<<<<<<< HEAD
 
-this is a change
+teste de new brnach
+=======
+teste de new brnach
+>>>>>>> FeatureA
