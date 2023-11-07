@@ -1,0 +1,45 @@
+jobs:
+- job: Job_1
+- deployment:
+    displayName: Agent job 1
+    cancelTimeoutInMinutes: 1
+    pool:
+      name: ubuntu-cluster
+    steps:
+    - checkout: self
+      clean: true
+      submodules: recursive
+      persistCredentials: True
+    - task: DeadpoolDevOps.dpdo-extensions.applyVersionToAssemblies.applyVersionToAssemblies@2
+      displayName: Apply Version To Assemblies
+    - task: DeadpoolDevOps.dpdo-extensions.getKeyVaultValuesByKey.getKeyVaultValuesByKey@1
+      displayName: Get KeyVault values by Key
+      inputs:
+        connectedServiceName: $(KeyVault.AzureSubscription)
+        keyVaultName: $(KeyVault.Name)
+        unmarkedVariableList: $(KeyVault.SecretNames)
+    - task: UseDotNet@2
+      displayName: Use .Net Core SDK 7.0.x
+      inputs:
+        version: 7.0.x
+        includePreviewVersions: true
+    - task: NuGetAuthenticate@0
+      displayName: NuGet Authenticate
+    - task: DotNetCoreCLI@2
+      displayName: Install ReportGenerator tool
+      inputs:
+        command: custom
+        custom: tool
+        arguments: update --tool-path . dotnet-reportgenerator-globaltool
+    - task: DTCIDL-Technology-SE-Infra-Az-CD.dtci-tech-se-infra-az-pipeline-tasks.netCoreSetProjectGuid.netCoreSetProjectGuid@1
+      displayName: Set ProjectGuid
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: restore
+        projects: '**/*.sln'
+        feedRestore: 3d42dafe-4b20-4724-80da-d808120c7de1
+        nugetConfigPath: NuGet.config
+
+
+  
