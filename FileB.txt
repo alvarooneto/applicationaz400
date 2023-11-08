@@ -1,7 +1,1 @@
-File B
-<<<<<<< HEAD
-
-teste de new brnach
-=======
-teste de new brnach
->>>>>>> FeatureA
+Teste de nova alteração
